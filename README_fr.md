@@ -20,6 +20,11 @@ WireGuard® is fast and modern VPN that utilizes state-of-the-art cryptography. 
 
 **Version incluse :** 0.1~ynh1
 
+
+## Captures d'écran
+
+![Capture d'écran de WireGuard Client](./doc/screenshots/wireguard_client.png)
+
 ## Avertissements / informations importantes
 
 * Utiliser le panneau de configuration de l'application depuis l'interface d'administration de YunoHost pour configurer des connexions VPN.
