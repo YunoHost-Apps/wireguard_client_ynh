@@ -1,0 +1,174 @@
+#!/bin/bash
+
+#=================================================
+# GENERIC STARTING
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
+source _common.sh
+source /usr/share/yunohost/helpers
+
+ynh_abort_if_errors
+
+#=================================================
+# RETRIEVE ARGUMENTS
+#=================================================
+
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
+
+#=================================================
+# SPECIFIC GETTERS FOR TOML SHORT KEY
+#=================================================
+
+get__status() {
+    status() {
+        if wg | grep "interface: $(basename $file .conf)" -q; then
+            echo "running"
+        else
+            echo "not running"
+        fi
+    }
+    endpoint() {
+        endpoint=$(ynh_read_var_in_file --file=$1 --key=endpoint)
+        if [ -z $endpoint ]; then
+            echo "unknown"
+        else
+            echo $endpoint
+        fi
+    }
+
+    if [ -n "$(find $final_path -name '*.conf' | head -1)" ];
+    then
+    cat << EOF
+ask:
+  en: |
+    Use the Services panel to stop or start VPN interfaces
+    
+    | Interface | Status | At boot | Endpoint |
+    | --------- | ------ | ------- | -------- |
+EOF
+    for file in $final_path/*.conf ; do
+        echo "    | $(basename $file .conf) | $(status $file) | $(systemctl is-enabled wireguard_client@$(basename $file .conf)) | $(endpoint $file) |"
+    done
+    fi
+}
+
+#=================================================
+# SPECIFIC VALIDATORS FOR TOML SHORT KEYS
+#=================================================
+
+#=================================================
+# SPECIFIC SETTERS FOR TOML SHORT KEYS
+#=================================================
+
+#=================================================
+# OVERWRITING APPLY STEP
+#=================================================
+ynh_app_config_apply() {
+    _ynh_app_config_apply
+
+    #=================================================
+    # GENERATE INTERFACE ARRAYS
+    #=================================================
+    # Convert comma-separated list into a Bash array
+    readarray -td, interfaces_array < <(echo $interfaces)
+    readarray -td, old_interfaces_array < <(echo ${old[interfaces]})
+
+    # https://stackoverflow.com/questions/2312762/compare-difference-of-two-arrays-in-bash
+    # Get added interfaces
+    added_interfaces_array=(`echo ${interfaces_array[@]} ${old_interfaces_array[@]} | tr ' ' '\n' | sort | uniq -u `)
+    removed_interfaces_array=(`echo ${old_interfaces_array[@]} ${added_interfaces[@]} | tr ' ' '\n' | sort | uniq -D | uniq `)
+
+    ynh_print_info --message="Previous interfaces: ${old_interfaces_array[*]}"
+    ynh_print_info --message="Added interfaces: ${added_interfaces_array[*]}"
+    ynh_print_info --message="Removed interfaces: ${removed_interfaces_array[*]}"
+
+    if [ "${changed[interfaces]}" == "true" ];
+    then
+
+    #=================================================
+    # HANDLING NEW INTERFACES
+    #=================================================
+    # Create temporary directory for config_panel generation
+    TEMP_CONFIGPANEL=$(mktemp -d)
+
+    # For each new interface, store its settings
+    for i in ${added_interfaces_array[@]}
+    do
+        i_atboot="${i}_atboot"
+        i_conf="${i}_conf"
+        ynh_app_setting_set --app=$app --key=$i_atboot --value=1
+        ynh_app_setting_set --app=$app --key=$i_conf --value=""
+    done
+
+    # Generate the new config panel
+    cat ../conf/config_panel.template.toml > /etc/yunohost/apps/$app/config_panel.toml
+    for i in ${interfaces_array[@]}
+    do
+        ynh_add_config --template="config_panel.part.toml" --destination="$TEMP_CONFIGPANEL/config_panel.$i.toml"
+        ynh_delete_file_checksum --file="$TEMP_CONFIGPANEL/config_panel.$i.toml"
+    done
+    for file in "$TEMP_CONFIGPANEL"/*; do
+        cat $file >> /etc/yunohost/apps/$app/config_panel.toml || true
+    done
+    ynh_secure_remove --file=$TEMP_CONFIGPANEL
+
+    #=================================================
+    # HANDLING REMOVED INTERFACES
+    #=================================================
+    for i in ${removed_interfaces_array[@]}
+    do
+        i_atboot="${i}_atboot"
+        i_conf="${i}_conf"
+        ynh_app_setting_delete --app=$app --key=$i_atboot
+        ynh_app_setting_delete --app=$app --key=$i_conf
+        systemctl stop wireguard_client@$i.service
+        systemctl disable --quiet wireguard_client@$i.service
+        yunohost service remove wireguard_client@$i
+    done
+
+    fi
+
+    for i in ${old_interfaces_array[@]}
+    do
+    i_atboot="${i}_atboot"
+    i_conf="${i}_conf"
+
+    #=================================================
+    # HANDLING CONFIGURATION FILES
+    #=================================================
+    if [ "${changed[$i_conf]}" == "true" ] && [ -f "$final_path/$i.conf" ];
+    then
+        systemctl stop wireguard_client@$i.service
+        systemctl start wireguard_client@$i.service
+        systemctl enable --quiet wireguard_client@$i.service
+        yunohost service add wireguard_client@$i --description="WireGuard VPN Client $i" --test_status="wg | grep \"interface: $i\" -q"
+    elif [ "${changed[$i_conf]}" == "true" ] && [ ! -f "$final_path/$i.conf" ];
+    then
+        systemctl disable --quiet --now wireguard_client@$i.service
+        yunohost service remove wireguard_client@$i || true
+    fi
+
+    #=================================================
+    # HANDLING START AT BOOT CHANGES
+    #=================================================
+    # In the context of YunoHost config panels booleans, truthy is 1
+    if [ "${changed[$i_atboot]}" == "true" ] && [ ${!i_atboot} -eq 1 ];
+    then
+        systemctl enable --quiet wireguard_client@$i.service
+        ynh_print_info --message="$i interface will automatically start upon server boot"
+    elif [ "${changed[$i_atboot]}" == "true" ] && [ ${!i_atboot} -eq 0 ];
+    then
+        systemctl disable --quiet wireguard_client@$i.service
+        ynh_print_info --message="$i interface will not automatically start upon server boot"
+    fi
+
+    done
+
+}
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+ynh_app_config_run $1

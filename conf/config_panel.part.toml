@@ -1,0 +1,13 @@
+    [main.__I__]
+    name = "__I__ interface"
+
+        [main.__I__.__I___atboot]
+        ask = "Enable interface at boot"
+        type = "boolean"
+
+        [main.__I__.__I___conf]
+        ask = "Configuration file for the interface"
+        type = "file"
+        accept = ".conf"
+        help = "Upload the configuration file provided by the WireGuard server. Delete to remove it."
+        bind = "__FINALPATH__/__I__.conf"

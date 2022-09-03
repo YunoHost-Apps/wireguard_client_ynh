@@ -1,0 +1,23 @@
+version = "1.0"
+
+[main]
+name = "Configuration"
+
+    [main.status]
+    name = "Status of the WireGuard client configurations"
+
+        [main.status.status]
+        ask = "No configuration file detected"
+        type = "alert"
+        style = "info"
+
+    [main.interfaces]
+    name = "Interfaces"
+
+        [main.interfaces.interfaces]
+        ask = "List of VPN clients to handle"
+        type = "tags"
+        help = "Adding or removing clients in here will create or delete configuration files and network interfaces upon next Save"
+        pattern.regexp = '^[\w.]+'
+        pattern.error  = "Only alphanumerical characters and `_` are allowed"
+
