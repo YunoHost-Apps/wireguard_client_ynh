@@ -6,7 +6,7 @@
         "en": "Connect your server to VPNs as a client",
         "fr": "Connectez votre serveur à des VPN en tant que client"
     },
-    "version": "0.1~ynh1",
+    "version": "0.2~ynh1",
     "url": "https://www.wireguard.com/",
     "upstream": {
         "license": "MIT",
