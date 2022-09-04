@@ -121,11 +121,12 @@ ynh_app_config_apply() {
     do
         i_atboot="${i}_atboot"
         i_conf="${i}_conf"
-        ynh_app_setting_delete --app=$app --key=$i_atboot
-        ynh_app_setting_delete --app=$app --key=$i_conf
         systemctl stop wireguard_client@$i.service
         systemctl disable --quiet wireguard_client@$i.service
         yunohost service remove wireguard_client@$i
+        ynh_secure_remove --file=${!i_conf}
+        ynh_app_setting_delete --app=$app --key=$i_atboot
+        ynh_app_setting_delete --app=$app --key=$i_conf
     done
 
     fi
@@ -140,13 +141,26 @@ ynh_app_config_apply() {
     #=================================================
     if [ "${changed[$i_conf]}" == "true" ] && [ -f "$final_path/$i.conf" ];
     then
+        # If the file has been changed, we need to bring the interface down and restart it
         systemctl stop wireguard_client@$i.service
-        systemctl start wireguard_client@$i.service
-        systemctl enable --quiet wireguard_client@$i.service
+        systemctl start wireguard_client@$i.service || true
+        # Enable VPN at boot if required
+        [ ${!i_atboot} -eq 1 ] && systemctl enable --quiet wireguard_client@$i.service
+        # Integrate service in YunoHost
         yunohost service add wireguard_client@$i --description="WireGuard VPN Client $i" --test_status="wg | grep \"interface: $i\" -q"
     elif [ "${changed[$i_conf]}" == "true" ] && [ ! -f "$final_path/$i.conf" ];
     then
         systemctl disable --quiet --now wireguard_client@$i.service
+        # If, somehow, the interface is still running,
+        # at this point the configuration file is already removed by YunoHost core.
+        # We could prevent that with a dedicated setter, but I don't think we can have catchall functions in Bash
+        # So, let's dump the still running interface information, shut the interface off, and delete all relevant files.
+        if wg | grep "^interface: $i$" -q; then
+            touch $final_path/$i.conf
+            wg-quick save $final_path/$i.conf
+            wg-quick down $final_path/$i.conf
+            ynh_secure_remove --file=$final_path/$i.conf
+        fi
         yunohost service remove wireguard_client@$i || true
     fi
 
