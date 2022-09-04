@@ -80,7 +80,7 @@ for file in $final_path/*.conf ; do
     yunohost service add wireguard_client@$i --description="WireGuard VPN Client $i" --test_status="wg | grep \"interface: $i\" -q"
     if [ $(ynh_app_setting_get --app=$app --key=${i}_atboot) -eq 1 ]; then
         ynh_print_info --message="$i interface was also enabled at boot, let's start it..."
-        systemctl start wireguard_client@$i.service || true
+        ynh_systemd_action --service_name=wireguard_client@$i.service --action=start || true
     fi
 done
 
