@@ -16,7 +16,8 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 ## Overview
 
-WireGuard® is fast and modern VPN that utilizes state-of-the-art cryptography. It aims to be faster, simpler, leaner, and more useful than IPsec. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN.
+WireGuard® is fast and modern VPN that utilizes state-of-the-art cryptography.  
+It aims to be faster, simpler, leaner, and more useful than IPsec. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN.
 
 
 **Shipped version:** 0.3~ynh1
@@ -24,10 +25,6 @@ WireGuard® is fast and modern VPN that utilizes state-of-the-art cryptography. 
 ## Screenshots
 
 ![Screenshot of WireGuard Client](./doc/screenshots/wireguard_client.png)
-
-## Disclaimers / important information
-
-* Use the app's configuration panel from your Yunohost webadmin to configure VPN connections.
 
 ## Documentation and resources
 
