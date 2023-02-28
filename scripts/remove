@@ -10,23 +10,13 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# LOAD SETTINGS
-#=================================================
-ynh_script_progression --message="Loading installation settings..." --weight=1
-
-app=$YNH_APP_INSTANCE_NAME
-
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-
-#=================================================
 # STANDARD REMOVE
 #=================================================
 # REMOVE SERVICE INTEGRATION IN YUNOHOST
 #=================================================
 
 # Remove the services from the list of services known by Yunohost (added from `yunohost service add`)
-
-for file in $final_path/*.conf ; do
+for file in $install_dir/*.conf ; do
     i=$(basename $file .conf)
     systemctl disable --quiet --now wireguard_client@$i.service || true
     yunohost service remove wireguard_client@$i || true
@@ -35,42 +25,11 @@ done
 #=================================================
 # STOP AND REMOVE SERVICE
 #=================================================
-ynh_script_progression --message="Stopping and removing the systemd service..." --weight=1
+ynh_print_info --message="Stopping and removing the systemd service..."
 
 ynh_secure_remove --file="/etc/systemd/system/wireguard_client@.service"
 
 #=================================================
-# REMOVE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Removing dependencies..." --weight=6
-
-# Remove metapackage and its dependencies
-ynh_remove_app_dependencies
-
-#=================================================
-# REMOVE APP MAIN DIR
-#=================================================
-ynh_script_progression --message="Removing app main directory..." --weight=1
-
-# Remove the app directory securely
-ynh_secure_remove --file="$final_path"
-
-#=================================================
-# SPECIFIC REMOVE
-#=================================================
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# REMOVE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Removing the dedicated system user..." --weight=1
-
-# Delete a system user
-ynh_system_user_delete --username=$app
-
-#=================================================
 # END OF SCRIPT
 #=================================================
-
-ynh_script_progression --message="Removal of $app completed" --last
+ynh_print_info --message="Removal of $app completed"
