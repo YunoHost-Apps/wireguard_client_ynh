@@ -21,3 +21,9 @@ name = "Configuration"
         pattern.regexp = '^[\w.]+'
         pattern.error  = "Only alphanumerical characters and `_` are allowed"
 
+        [main.interfaces.alert]
+        ask = """Be wary about the configuration files you upload here.
+              They may contain PostUp and PostDown instructions; these will be run as `root` by WireGuard, with no safeguards."""
+        type = "alert"
+        style = "warning"
+
