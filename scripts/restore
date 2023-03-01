@@ -11,68 +11,29 @@ source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# MANAGE SCRIPT FAILURE
-#=================================================
-
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# LOAD SETTINGS
-#=================================================
-ynh_script_progression --message="Loading installation settings..." --weight=1
-
-app=$YNH_APP_INSTANCE_NAME
-
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-
-#=================================================
-# CHECK IF THE APP CAN BE RESTORED
-#=================================================
-ynh_script_progression --message="Validating restoration parameters..." --weight=1
-
-test ! -d $final_path || ynh_die --message="There is already a directory: $final_path "
-
-#=================================================
 # STANDARD RESTORATION STEPS
 #=================================================
 # RESTORE THE APP MAIN DIR
 #=================================================
-ynh_script_progression --message="Restoring the app main directory..." --weight=1
+ynh_print_info --message="Restoring the app main directory..."
 
-ynh_restore_file --origin_path="$final_path"
-
-#=================================================
-# RECREATE THE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Recreating the dedicated system user..." --weight=1
-
-# Create the dedicated user (if not existing)
-ynh_system_user_create --username=$app
+ynh_restore_file --origin_path="$install_dir"
 
 #=================================================
 # RESTORE USER RIGHTS
 #=================================================
 
 # Restore permissions on app files
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app: "$final_path"
+chmod 750 "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R $app: "$install_dir"
 
 #=================================================
 # SPECIFIC RESTORATION
 #=================================================
-# REINSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Reinstalling dependencies..." --weight=7
-
-# Define and install dependencies
-ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
 # RESTORE SYSTEMD
 #=================================================
-ynh_script_progression --message="Restoring the systemd configuration..." --weight=1
+ynh_print_info --message="Restoring the systemd configuration..."
 
 ynh_restore_file --origin_path=/etc/systemd/system/wireguard_client@.service
 systemctl daemon-reload
@@ -80,17 +41,9 @@ systemctl daemon-reload
 #=================================================
 # START AND INTEGRATE SERVICE IN YUNOHOST
 #=================================================
-ynh_script_progression --message="Integrating services in YunoHost..." --weight=1
+ynh_print_info --message="Integrating services in YunoHost..."
 
-for file in $final_path/*.conf ; do
-    i=$(basename $file .conf)
-    systemctl enable --quiet wireguard_client@$i.service
-    yunohost service add wireguard_client@$i --description="WireGuard VPN Client $i" --test_status="wg | grep \"interface: $i\" -q"
-    if [ $(ynh_app_setting_get --app=$app --key=${i}_atboot) -eq 1 ]; then
-        ynh_print_info --message="$i interface was also enabled at boot, let's start it..."
-        ynh_systemd_action --service_name=wireguard_client@$i.service --action=start || true
-    fi
-done
+integrate_services
 
 #=================================================
 # GENERIC FINALIZATION
@@ -99,5 +52,4 @@ done
 #=================================================
 # END OF SCRIPT
 #=================================================
-
-ynh_script_progression --message="Restoration completed for $app." --last
+ynh_print_info --message="Restoration completed for $app."
