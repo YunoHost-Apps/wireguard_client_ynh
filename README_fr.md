@@ -29,7 +29,7 @@ It aims to be faster, simpler, leaner, and more useful than IPsec. It intends to
 ## Documentations et ressources
 
 * Site officiel de l’app : <https://www.wireguard.com/>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_wireguard_client>
+* YunoHost Store: <https://apps.yunohost.org/app/wireguard_client>
 * Signaler un bug : <https://github.com/YunoHost-Apps/wireguard_client_ynh/issues>
 
 ## Informations pour les développeurs
