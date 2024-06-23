@@ -3,7 +3,7 @@
 请勿手动编辑。
 -->
 
-# YunoHost 的 WireGuard Client
+# YunoHost 上的 WireGuard Client
 
 [![集成程度](https://dash.yunohost.org/integration/wireguard_client.svg)](https://dash.yunohost.org/appci/app/wireguard_client) ![工作状态](https://ci-apps.yunohost.org/ci/badges/wireguard_client.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/wireguard_client.maintain.svg)
 
