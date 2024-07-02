@@ -5,7 +5,7 @@ Il NE doit PAS être modifié à la main.
 
 # WireGuard Client pour YunoHost
 
-[![Niveau d’intégration](https://dash.yunohost.org/integration/wireguard_client.svg)](https://dash.yunohost.org/appci/app/wireguard_client) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/wireguard_client.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/wireguard_client.maintain.svg)
+[![Niveau d’intégration](https://dash.yunohost.org/integration/wireguard_client.svg)](https://ci-apps.yunohost.org/ci/apps/wireguard_client/) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/wireguard_client.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/wireguard_client.maintain.svg)
 
 [![Installer WireGuard Client avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=wireguard_client)
 
@@ -16,8 +16,10 @@ Il NE doit PAS être modifié à la main.
 
 ## Vue d’ensemble
 
-WireGuard® is fast and modern VPN that utilizes state-of-the-art cryptography.  
-It aims to be faster, simpler, leaner, and more useful than IPsec. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN.
+WireGuard® est un VPN rapide et moderne qui utilise une cryptographie de pointe.
+Il vise à être plus rapide, plus simple, plus léger et plus utile qu'IPsec. Il a l'intention d'être considérablement plus performant qu'OpenVPN. WireGuard est conçu comme un VPN à usage général.
+
+Ce package inclut uniquement un panneau de configuration YunoHost pour charger des fichiers de configuration de WireGuard et pour créer les VPNs.
 
 
 **Version incluse :** 0.3~ynh2
