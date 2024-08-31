@@ -1,21 +1,15 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC STARTING
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
-ynh_abort_if_errors
+#REMOVEME? ynh_abort_if_errors
 
 #=================================================
 # RETRIEVE ARGUMENTS
 #=================================================
 
-install_dir=$(ynh_app_setting_get --app=$app --key=install_dir)
+install_dir=$(ynh_app_setting_get --key=install_dir)
 
 #=================================================
 # SPECIFIC GETTERS FOR TOML SHORT KEY
@@ -44,7 +38,7 @@ get__status() {
 ask:
   en: |
     Use the Services panel to stop or start VPN interfaces
-    
+
     | Interface | Status | At boot | Endpoint |
     | --------- | ------ | ------- | -------- |
 EOF
@@ -80,9 +74,9 @@ ynh_app_config_apply() {
     added_interfaces_array=(`echo ${interfaces_array[@]} ${old_interfaces_array[@]} | tr ' ' '\n' | sort | uniq -u `)
     removed_interfaces_array=(`echo ${old_interfaces_array[@]} ${added_interfaces[@]} | tr ' ' '\n' | sort | uniq -D | uniq `)
 
-    ynh_print_info --message="Previous interfaces: ${old_interfaces_array[*]}"
-    ynh_print_info --message="Added interfaces: ${added_interfaces_array[*]}"
-    ynh_print_info --message="Removed interfaces: ${removed_interfaces_array[*]}"
+    ynh_print_info "Previous interfaces: ${old_interfaces_array[*]}"
+    ynh_print_info "Added interfaces: ${added_interfaces_array[*]}"
+    ynh_print_info "Removed interfaces: ${removed_interfaces_array[*]}"
 
     if [ "${changed[interfaces]}" == "true" ];
     then
@@ -98,21 +92,21 @@ ynh_app_config_apply() {
     do
         i_atboot="${i}_atboot"
         i_conf="${i}_conf"
-        ynh_app_setting_set --app=$app --key=$i_atboot --value=1
-        ynh_app_setting_set --app=$app --key=$i_conf --value=""
+        ynh_app_setting_set --key=$i_atboot --value=1
+        ynh_app_setting_set --key=$i_conf --value=""
     done
 
     # Generate the new config panel
     cat ../conf/config_panel.template.toml > /etc/yunohost/apps/$app/config_panel.toml
     for i in ${interfaces_array[@]}
     do
-        ynh_add_config --template="config_panel.part.toml" --destination="$TEMP_CONFIGPANEL/config_panel.$i.toml"
-        ynh_delete_file_checksum --file="$TEMP_CONFIGPANEL/config_panel.$i.toml"
+        ynh_config_add --template="config_panel.part.toml" --destination="$TEMP_CONFIGPANEL/config_panel.$i.toml"
+        ynh_delete_file_checksum "$TEMP_CONFIGPANEL/config_panel.$i.toml"
     done
     for file in "$TEMP_CONFIGPANEL"/*; do
         cat $file >> /etc/yunohost/apps/$app/config_panel.toml || true
     done
-    ynh_secure_remove --file=$TEMP_CONFIGPANEL
+    ynh_safe_rm $TEMP_CONFIGPANEL
 
     #=================================================
     # HANDLING REMOVED INTERFACES
@@ -124,9 +118,9 @@ ynh_app_config_apply() {
         systemctl stop wireguard_client@$i.service
         systemctl disable --quiet wireguard_client@$i.service
         yunohost service remove wireguard_client@$i
-        ynh_secure_remove --file=${!i_conf}
-        ynh_app_setting_delete --app=$app --key=$i_atboot
-        ynh_app_setting_delete --app=$app --key=$i_conf
+        ynh_safe_rm ${!i_conf}
+        ynh_app_setting_delete --key=$i_atboot
+        ynh_app_setting_delete --key=$i_conf
     done
 
     fi
@@ -159,7 +153,7 @@ ynh_app_config_apply() {
             touch $install_dir/$i.conf
             wg-quick save $install_dir/$i.conf
             wg-quick down $install_dir/$i.conf
-            ynh_secure_remove --file=$install_dir/$i.conf
+            ynh_safe_rm $install_dir/$i.conf
         fi
         yunohost service remove wireguard_client@$i || true
     fi
@@ -171,18 +165,16 @@ ynh_app_config_apply() {
     if [ "${changed[$i_atboot]}" == "true" ] && [ ${!i_atboot} -eq 1 ];
     then
         systemctl enable --quiet wireguard_client@$i.service
-        ynh_print_info --message="$i interface will automatically start upon server boot"
+        ynh_print_info "$i interface will automatically start upon server boot"
     elif [ "${changed[$i_atboot]}" == "true" ] && [ ${!i_atboot} -eq 0 ];
     then
         systemctl disable --quiet wireguard_client@$i.service
-        ynh_print_info --message="$i interface will not automatically start upon server boot"
+        ynh_print_info "$i interface will not automatically start upon server boot"
     fi
 
     done
 
 }
 
-#=================================================
-# GENERIC FINALIZATION
 #=================================================
 ynh_app_config_run $1

@@ -1,11 +1,5 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
@@ -25,11 +19,11 @@ done
 #=================================================
 # STOP AND REMOVE SERVICE
 #=================================================
-ynh_print_info --message="Stopping and removing the systemd service..."
+ynh_print_info "Stopping and removing the systemd service..."
 
-ynh_secure_remove --file="/etc/systemd/system/wireguard_client@.service"
+ynh_safe_rm "/etc/systemd/system/wireguard_client@.service"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
-ynh_print_info --message="Removal of $app completed"
+ynh_print_info "Removal of $app completed"

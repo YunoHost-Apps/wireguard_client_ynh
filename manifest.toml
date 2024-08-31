@@ -17,6 +17,7 @@ fund = "https://www.wireguard.com/donations/"
 
 [integration]
 yunohost = ">= 11"
+helpers_version = "2.1"
 architectures = "all"
 multi_instance = false
 ldap = "not_relevant"
