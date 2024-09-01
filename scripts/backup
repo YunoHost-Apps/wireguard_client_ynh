@@ -13,8 +13,6 @@ ynh_print_info "Declaring files to be backed up..."
 ynh_backup "$install_dir"
 
 #=================================================
-# SPECIFIC BACKUP
-#=================================================
 # BACKUP SYSTEMD
 #=================================================
 

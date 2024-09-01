@@ -6,16 +6,14 @@ source /usr/share/yunohost/helpers
 #=================================================
 # INITIALIZE SETTINGS
 #=================================================
+
 # Needed for the config panel
 ynh_app_setting_set --key=interfaces --value=""
 
 #=================================================
-# SPECIFIC SETUP
-#=================================================
 # CONFIGURING WIREGUARD
 #=================================================
 
-# Create directory for client configuration files
 mkdir -p $install_dir
 
 #=================================================
@@ -27,14 +25,6 @@ ynh_script_progression "Configuring $app's systemd service..."
 ynh_config_add --template="wireguard_client@.service" --destination="/etc/systemd/system/$app@.service"
 systemctl daemon-reload
 
-#=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-
-# Set permissions to app files
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 750 "$install_dir"
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app: "$install_dir"
 #=================================================
 # END OF SCRIPT
 #=================================================

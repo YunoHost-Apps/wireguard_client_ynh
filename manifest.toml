@@ -16,7 +16,7 @@ cpe = "cpe:2.3:a:pfsense:pfsense-pkg-wireguard"
 fund = "https://www.wireguard.com/donations/"
 
 [integration]
-yunohost = ">= 11"
+yunohost = ">= 11.2.29"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = false
