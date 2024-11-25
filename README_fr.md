@@ -24,7 +24,7 @@ Il vise à être plus rapide, plus simple, plus léger et plus utile qu'IPsec. I
 Ce package inclut uniquement un panneau de configuration YunoHost pour charger des fichiers de configuration de WireGuard et pour créer les VPNs.
 
 
-**Version incluse :** 0.3~ynh2
+**Version incluse :** 0.3~ynh3
 
 ## Captures d’écran
 
