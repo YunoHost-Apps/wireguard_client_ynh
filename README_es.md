@@ -5,7 +5,9 @@ No se debe editar a mano.
 
 # WireGuard Client para Yunohost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/wireguard_client.svg)](https://ci-apps.yunohost.org/ci/apps/wireguard_client/) ![Estado funcional](https://ci-apps.yunohost.org/ci/badges/wireguard_client.status.svg) ![Estado En Mantención](https://ci-apps.yunohost.org/ci/badges/wireguard_client.maintain.svg)
+[![Nivel de integración](https://apps.yunohost.org/badge/integration/wireguard_client)](https://ci-apps.yunohost.org/ci/apps/wireguard_client/)
+![Estado funcional](https://apps.yunohost.org/badge/state/wireguard_client)
+![Estado En Mantención](https://apps.yunohost.org/badge/maintained/wireguard_client)
 
 [![Instalar WireGuard Client con Yunhost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=wireguard_client)
 
@@ -36,7 +38,7 @@ This package only ships a YunoHost configuration panel to load WireGuard configu
 
 ## Información para desarrolladores
 
-Por favor enviar sus correcciones a la [`branch testing`](https://github.com/YunoHost-Apps/wireguard_client_ynh/tree/testing
+Por favor enviar sus correcciones a la [rama `testing`](https://github.com/YunoHost-Apps/wireguard_client_ynh/tree/testing).
 
 Para probar la rama `testing`, sigue asÍ:
 

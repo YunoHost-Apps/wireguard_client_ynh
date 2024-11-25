@@ -5,7 +5,9 @@
 
 # YunoHost 上的 WireGuard Client
 
-[![集成程度](https://dash.yunohost.org/integration/wireguard_client.svg)](https://ci-apps.yunohost.org/ci/apps/wireguard_client/) ![工作状态](https://ci-apps.yunohost.org/ci/badges/wireguard_client.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/wireguard_client.maintain.svg)
+[![集成程度](https://apps.yunohost.org/badge/integration/wireguard_client)](https://ci-apps.yunohost.org/ci/apps/wireguard_client/)
+![工作状态](https://apps.yunohost.org/badge/state/wireguard_client)
+![维护状态](https://apps.yunohost.org/badge/maintained/wireguard_client)
 
 [![使用 YunoHost 安装 WireGuard Client](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=wireguard_client)
 

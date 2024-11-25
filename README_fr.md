@@ -5,7 +5,9 @@ Il NE doit PAS être modifié à la main.
 
 # WireGuard Client pour YunoHost
 
-[![Niveau d’intégration](https://dash.yunohost.org/integration/wireguard_client.svg)](https://ci-apps.yunohost.org/ci/apps/wireguard_client/) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/wireguard_client.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/wireguard_client.maintain.svg)
+[![Niveau d’intégration](https://apps.yunohost.org/badge/integration/wireguard_client)](https://ci-apps.yunohost.org/ci/apps/wireguard_client/)
+![Statut du fonctionnement](https://apps.yunohost.org/badge/state/wireguard_client)
+![Statut de maintenance](https://apps.yunohost.org/badge/maintained/wireguard_client)
 
 [![Installer WireGuard Client avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=wireguard_client)
 
