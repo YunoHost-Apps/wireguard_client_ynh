@@ -24,7 +24,7 @@ It aims to be faster, simpler, leaner, and more useful than IPsec. It intends to
 This package only ships a YunoHost configuration panel to load WireGuard configuration files and create the VPNs.
 
 
-**Dostarczona wersja:** 0.3~ynh3
+**Dostarczona wersja:** 0.3~ynh4
 
 ## Zrzuty ekranu
 
