@@ -33,6 +33,8 @@ ram.runtime = "50M"
     [resources.install_dir]
     dir = "/opt/yunohost/__APP__"
 
+    [resources.permissions]
+
     [resources.apt]
     packages = "wireguard"
     packages_from_raw_bash = """
