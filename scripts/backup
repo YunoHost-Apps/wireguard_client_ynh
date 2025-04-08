@@ -1,22 +1,27 @@
 #!/bin/bash
 
-#Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
+# Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
 ynh_print_info "Declaring files to be backed up..."
 
 #=================================================
-# BACKUP THE APP MAIN DIR
+# BACKUP THE DATA DIR
 #=================================================
 
-ynh_backup "$install_dir"
+ynh_backup "$data_dir"
 
 #=================================================
-# BACKUP SYSTEMD
+# BACKUP SYSTEM CONFIGURATION
 #=================================================
 
-ynh_backup /etc/systemd/system/wireguard_client@.service
+# Backup the systemd service unit
+ynh_backup "/etc/systemd/system/wireguard_client@.service"
 
 #=================================================
 # END OF SCRIPT

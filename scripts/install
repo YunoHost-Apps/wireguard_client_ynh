@@ -1,25 +1,23 @@
 #!/bin/bash
 
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
 source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# INITIALIZE SETTINGS
+# INITIALIZE AND STORE SETTINGS
 #=================================================
 
 # Needed for the config panel
 ynh_app_setting_set --key=interfaces --value=""
 
 #=================================================
-# CONFIGURING WIREGUARD
+# SYSTEM CONFIGURATION
 #=================================================
-
-mkdir -p $install_dir
-
-#=================================================
-# SETUP SYSTEMD
-#=================================================
-ynh_script_progression "Configuring $app's systemd service..."
+ynh_script_progression "Adding system configurations related to $app..."
 
 # Create dedicated systemd configs for starting and monitoring WireGuard's configurations
 ynh_config_add --template="wireguard_client@.service" --destination="/etc/systemd/system/$app@.service"

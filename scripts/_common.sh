@@ -5,7 +5,7 @@
 #=================================================
 
 integrate_services () {
-    for file in $install_dir/*.conf ; do
+    for file in $data_dir/*.conf ; do
         i=$(basename $file .conf)
         systemctl enable --quiet wireguard_client@$i.service
         yunohost service add wireguard_client@$i --description="WireGuard VPN Client $i" --test_status="wg | grep \"interface: $i\" -q"

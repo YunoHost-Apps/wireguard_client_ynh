@@ -1,9 +1,13 @@
 #!/bin/bash
 
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
 source _common.sh
 source /usr/share/yunohost/helpers
 
-#REMOVEME? ynh_abort_if_errors
+ynh_abort_if_errors
 
 #=================================================
 # RETRIEVE ARGUMENTS
@@ -32,7 +36,7 @@ get__status() {
         fi
     }
 
-    if [ -n "$(find $install_dir -name '*.conf' | head -1)" ];
+    if [ -n "$(find $data_dir -name '*.conf' | head -1)" ];
     then
     cat << EOF
 ask:
@@ -42,7 +46,7 @@ ask:
     | Interface | Status | At boot | Endpoint |
     | --------- | ------ | ------- | -------- |
 EOF
-    for file in $install_dir/*.conf ; do
+    for file in $data_dir/*.conf ; do
         echo "    | $(basename $file .conf) | $(status $file) | $(systemctl is-enabled wireguard_client@$(basename $file .conf)) | $(endpoint $file) |"
     done
     fi
@@ -133,7 +137,7 @@ ynh_app_config_apply() {
     #=================================================
     # HANDLING CONFIGURATION FILES
     #=================================================
-    if [ "${changed[$i_conf]}" == "true" ] && [ -f "$install_dir/$i.conf" ];
+    if [ "${changed[$i_conf]}" == "true" ] && [ -f "$data_dir/$i.conf" ];
     then
         # If the file has been changed, we need to bring the interface down and restart it
         systemctl stop wireguard_client@$i.service
@@ -142,7 +146,7 @@ ynh_app_config_apply() {
         [ ${!i_atboot} -eq 1 ] && systemctl enable --quiet wireguard_client@$i.service
         # Integrate service in YunoHost
         yunohost service add wireguard_client@$i --description="WireGuard VPN Client $i" --test_status="wg | grep \"interface: $i\" -q"
-    elif [ "${changed[$i_conf]}" == "true" ] && [ ! -f "$install_dir/$i.conf" ];
+    elif [ "${changed[$i_conf]}" == "true" ] && [ ! -f "$data_dir/$i.conf" ];
     then
         systemctl disable --quiet --now wireguard_client@$i.service
         # If, somehow, the interface is still running,
@@ -150,10 +154,10 @@ ynh_app_config_apply() {
         # We could prevent that with a dedicated setter, but I don't think we can have catchall functions in Bash
         # So, let's dump the still running interface information, shut the interface off, and delete all relevant files.
         if wg | grep "^interface: $i$" -q; then
-            touch $install_dir/$i.conf
-            wg-quick save $install_dir/$i.conf
-            wg-quick down $install_dir/$i.conf
-            ynh_safe_rm $install_dir/$i.conf
+            touch $data_dir/$i.conf
+            wg-quick save $data_dir/$i.conf
+            wg-quick down $data_dir/$i.conf
+            ynh_safe_rm $data_dir/$i.conf
         fi
         yunohost service remove wireguard_client@$i || true
     fi
@@ -177,4 +181,4 @@ ynh_app_config_apply() {
 }
 
 #=================================================
-ynh_app_config_run $1
+ynh_app_config_run "$1"

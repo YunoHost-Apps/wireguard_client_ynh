@@ -10,4 +10,4 @@
         type = "file"
         accept = [".conf", "text/plain"]
         help = "Upload the configuration file provided by the WireGuard server. Delete to remove it."
-        bind = "__INSTALL_DIR__/__I__.conf"
+        bind = "__DATA_DIR__/__I__.conf"

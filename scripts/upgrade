@@ -1,12 +1,21 @@
 #!/bin/bash
 
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
 source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_print_info "Ensuring downward compatibility..."
+ynh_script_progression "Ensuring downward compatibility..."
+
+if ynh_app_upgrading_from_version_before 1.0.20210914~ynh1; then
+	cp -rf /opt/yunohost/$app/* $data_dir
+	ynh_safe_rm "/opt/yunohost/$app"
+fi
 
 # Making sure the current config panel is not being overidden by the upgrade
 # We copy the current over the temporary one deployed during the upgrade
@@ -14,15 +23,16 @@ ynh_print_info "Ensuring downward compatibility..."
 cp /etc/yunohost/apps/$app/config_panel.toml $YNH_APP_BASEDIR
 
 #=================================================
-# SETUP SYSTEMD
+# REAPPLY SYSTEM CONFIGURATION
 #=================================================
-ynh_print_info "Upgrading systemd configuration..."
+ynh_script_progression "Upgrading system configurations related to $app..."
 
-# Create dedicated systemd configs for starting and monitoring WireGuard's configuration
+# Create dedicated systemd configs for starting and monitoring WireGuard's configurations
 ynh_config_add --template="wireguard_client@.service" --destination="/etc/systemd/system/$app@.service"
 systemctl daemon-reload
 
 #=================================================
 # END OF SCRIPT
 #=================================================
-ynh_print_info "Upgrade of $app completed."
+
+ynh_script_progression "Upgrade of $app completed"
