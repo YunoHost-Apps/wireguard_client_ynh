@@ -8,6 +8,6 @@
         [main.__I__.__I___conf]
         ask = "Configuration file for the interface"
         type = "file"
-        accept = ".conf"
+        accept = [".conf", "text/plain"]
         help = "Upload the configuration file provided by the WireGuard server. Delete to remove it."
         bind = "__INSTALL_DIR__/__I__.conf"
