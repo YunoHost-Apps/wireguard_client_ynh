@@ -12,11 +12,6 @@ source /usr/share/yunohost/helpers
 #=================================================
 ynh_script_progression "Ensuring downward compatibility..."
 
-if ynh_app_upgrading_from_version_before 1.0.20210914~ynh1; then
-	cp -rf /opt/yunohost/$app/* $data_dir
-	ynh_safe_rm "/opt/yunohost/$app"
-fi
-
 # Making sure the current config panel is not being overidden by the upgrade
 # We copy the current over the temporary one deployed during the upgrade
 # It is being copied back over after the end of this upgrade script

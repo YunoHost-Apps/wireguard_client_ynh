@@ -7,9 +7,9 @@ Wants=network-online.target nss-lookup.target
 Type=oneshot
 User=root
 RemainAfterExit=yes
-ExecStart=/usr/bin/wg-quick up __DATA_DIR__/%i.conf
-ExecStop=/usr/bin/wg-quick down __DATA_DIR__/%i.conf
-ExecReload=/bin/bash -c 'exec /usr/bin/wg syncconf %i <(exec /usr/bin/wg-quick strip __DATA_DIR__/%i.conf)'
+ExecStart=/usr/bin/wg-quick up __INSTALL_DIR__/%i.conf
+ExecStop=/usr/bin/wg-quick down __INSTALL_DIR__/%i.conf
+ExecReload=/bin/bash -c 'exec /usr/bin/wg syncconf %i <(exec /usr/bin/wg-quick strip __INSTALL_DIR__/%i.conf)'
 Environment=WG_ENDPOINT_RESOLUTION_RETRIES=infinity
 
 [Install]
