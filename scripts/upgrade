@@ -1,8 +1,6 @@
 #!/bin/bash
 
 #=================================================
-# GENERIC START
-#=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
 
@@ -12,7 +10,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_print_info --message="Ensuring downward compatibility..."
+ynh_script_progression "Ensuring downward compatibility..."
 
 # Making sure the current config panel is not being overidden by the upgrade
 # We copy the current over the temporary one deployed during the upgrade
@@ -20,26 +18,16 @@ ynh_print_info --message="Ensuring downward compatibility..."
 cp /etc/yunohost/apps/$app/config_panel.toml $YNH_APP_BASEDIR
 
 #=================================================
-# SETUP SYSTEMD
+# REAPPLY SYSTEM CONFIGURATION
 #=================================================
-ynh_print_info --message="Upgrading systemd configuration..."
+ynh_script_progression "Upgrading system configurations related to $app..."
 
-# Create dedicated systemd configs for starting and monitoring WireGuard's configuration
-ynh_add_config --template="wireguard_client@.service" --destination="/etc/systemd/system/$app@.service"
+# Create dedicated systemd configs for starting and monitoring WireGuard's configurations
+ynh_config_add --template="wireguard_client@.service" --destination="/etc/systemd/system/$app@.service"
 systemctl daemon-reload
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-
-# Set permissions to app files
-chmod 750 "$install_dir"
-chmod -R o-rwx "$install_dir"
-chown -R $app: "$install_dir"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
-ynh_print_info --message="Upgrade of $app completed."
+
+ynh_script_progression "Upgrade of $app completed"
