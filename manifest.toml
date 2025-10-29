@@ -7,7 +7,7 @@ name = "WireGuard Client"
 description.en = "Connect your server to VPNs as a client"
 description.fr = "Connectez votre serveur à des VPN en tant que client"
 
-version = "1.0.20210914~ynh1"
+version = "1.0.20251029~ynh1"
 
 maintainers = ["tituspijean"]
 
