@@ -17,7 +17,7 @@ name = "Configuration"
         [main.interfaces.interfaces]
         ask = "List of VPN clients to handle"
         type = "tags"
-        help = "Adding or removing clients in here will create or delete configuration files and network interfaces upon next Save"
+        help = "Adding or removing clients in here will create or delete configuration files and network interfaces upon next Save (only alphanumerical characters and `_` are allowed)"
         pattern.regexp = '^[\w.]+'
         pattern.error  = "Only alphanumerical characters and `_` are allowed"
 
